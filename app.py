@@ -63,7 +63,7 @@ def home_page():
     # 시험 설명 추가 (중앙 정렬)
     st.markdown("""
     <div style='text-align: center; font-size: 24px;'>
-        본 시험은 <b>AI 모델 평가 및 이론 문제 풀이</b>로 구성되어 있습니다.<br>
+        본 시험은 <b>개념 문제 및 모델 검증</b>으로 구성되어 있습니다.<br>
         아래 버튼을 눌러 시험을 시작하세요.
     </div>
     <br><br>
