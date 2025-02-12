@@ -1,0 +1,7 @@
+conda install conda-forge::streamlit
+conda install conda-forge::pandas
+conda install conda-forge::joblib
+conda install conda-forge::matplotlib
+conda install conda-forge::seaborn
+conda install conda-forge::scikit-learn
+conda install conda-forge::pyinstaller
