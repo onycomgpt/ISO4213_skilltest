@@ -136,7 +136,7 @@ def start_validation():
 
     # 파일명이 일치하는지 확인
     if uploaded_model_name != expected_model_name or uploaded_test_data_name != expected_test_data_name:
-        st.error(f"❌ 업로드된 모델과 테스트 데이터가 {dataset_type} 유형과 일치하지 않습니다.")
+        st.error(f"❌ 업로드된 모델과 테스트 데이터가 {dataset_type} 유형과 일치하지 않습니다(파일명 확인: XXX_model / XXX_test_dataset).")
         return
 
 
