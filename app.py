@@ -105,17 +105,17 @@ def plot_confusion_matrix(y_test, y_pred):
     st.pyplot(fig)
 
 # 🎯 모델 검증 실행 함수
+# 🎯 모델 검증 실행 함수 (dataset_type과 파일 이름 검사 추가)
 def start_validation():
     dataset_type = st.session_state["dataset_type"]
 
     # 업로드된 파일 확인
     if not st.session_state["uploaded_model"]:
         st.warning("⚠️ 모델을 업로드하세요.")
-        return  # 모델이 없으면 검증 실행하지 않음
-
+        return  
     if not st.session_state["uploaded_test_data"]:
         st.warning("⚠️ 테스트 데이터를 업로드하세요.")
-        return  # 테스트 데이터가 없으면 검증 실행하지 않음
+        return  
 
     # 업로드된 파일을 임시 저장 후 사용
     uploaded_model = save_uploaded_file(st.session_state["uploaded_model"])
@@ -125,10 +125,26 @@ def start_validation():
     if not uploaded_model or not uploaded_test_data:
         return  
 
-    # 모델과 데이터셋 로드
+    # 🔹 업로드된 파일명 검사 (dataset_type과 비교)
+    # 기대하는 파일명 가져오기
+    expected_model_name = os.path.basename(DATASET_FILES[dataset_type]["model"])
+    expected_test_data_name = os.path.basename(DATASET_FILES[dataset_type]["test_data"])
+
+    # 업로드된 파일명 가져오기
+    uploaded_model_name = st.session_state["uploaded_model"].name
+    uploaded_test_data_name = st.session_state["uploaded_test_data"].name
+
+    # 파일명이 일치하는지 확인
+    if uploaded_model_name != expected_model_name or uploaded_test_data_name != expected_test_data_name:
+        st.error(f"❌ 업로드된 모델과 테스트 데이터가 {dataset_type} 유형과 일치하지 않습니다.")
+        return
+
+
+    # 🔹 모델과 데이터셋 로드
     model = joblib.load(uploaded_model)
     test_df = pd.read_csv(uploaded_test_data)
 
+    # 🔹 데이터셋 유형에 따른 처리
     if dataset_type == "titanic":
         X_test, y_test = preprocess_titanic_data(test_df)
         y_pred = model.predict(X_test)
@@ -142,6 +158,7 @@ def start_validation():
         y_pred = model.predict(X_test)
         metrics = calculate_mnist_metrics(y_test, y_pred)
 
+    # 🔹 성능 결과 출력
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("모델 성능 평가 결과")
@@ -151,6 +168,7 @@ def start_validation():
 
     with col2:
         plot_confusion_matrix(y_test, y_pred)
+
 
 
 # 🎯 모델 및 데이터 다운로드 버튼 추가
@@ -221,4 +239,3 @@ def main():
 # 앱 실행
 if __name__ == "__main__":
     main()
-
