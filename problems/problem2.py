@@ -26,7 +26,7 @@ def display_problem2():
         # HTML 테이블을 활용하여 물리적 크기 확대
         st.markdown("""
         <table style="width:100%; height:400px; border-collapse: collapse; text-align: center; font-size: 36px; border: 3px solid #333399;">
-            <tr style="background-color: #E3E4E6; font-size: 40px;">
+            <tr style=" font-size: 40px;">
                 <th></th>
                 <th>실제 양성 (Positive)</th>
                 <th>실제 음성 (Negative)</th>
@@ -48,7 +48,7 @@ def display_problem2():
         # TP, FP, FN, TN 정보 제공
         st.markdown("<h2 style='font-size:40px;text-align: center;'>📊 TP, FP, FN, TN 값</h2>", unsafe_allow_html=True)
         st.markdown("""
-        <div style='font-size:34px; line-height:2.5; background-color:#F5F5F5; padding:30px; border-radius:12px; border: 3px solid #333399;'>
+        <div style='font-size:34px; line-height:2.5; padding:30px; border-radius:12px; border: 3px solid #333399;'>
         ✅ TP (True Positive) = 70  <br>
         ✅ FP (False Positive) = 30  <br>
         ✅ FN (False Negative) = 25  <br>
