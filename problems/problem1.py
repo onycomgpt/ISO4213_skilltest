@@ -2,7 +2,7 @@ import streamlit as st
 
 def display_problem1():
     """문제 1를 화면에 표시하는 함수"""
-    st.title("📢 문제 1: 이론 문제")
+    st.title("- 문제 1: 이론 문제")
 
     # 문제 설명
     st.markdown("""
