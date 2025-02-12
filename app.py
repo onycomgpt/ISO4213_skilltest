@@ -202,13 +202,13 @@ def add_download_buttons(dataset_type):
 def exam_page():
     # st.title("ISO4213 Skill Test")
     
-    task_type = st.sidebar.selectbox("시험 유형 선택", ["이론 문제", "모델 검증"])
+    task_type = st.sidebar.selectbox("시험 유형 선택", ["개념 문제", "모델 검증"])
     
-    if task_type == "이론 문제":
-        problem_type = st.sidebar.selectbox("이론 문제 선택", ["문제1", "문제2"])
-        if problem_type == "문제1":
+    if task_type == "개념 문제":
+        problem_type = st.sidebar.selectbox("개념 문제 선택", ["이론 문제", "성능 지표 계산"])
+        if problem_type == "이론 문제":
             display_problem1()
-        elif problem_type == "문제2":
+        elif problem_type == "성능 지표 계산":
             display_problem2()
     
     elif task_type == "모델 검증":
