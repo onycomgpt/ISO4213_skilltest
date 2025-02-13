@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix
 # 모듈 가져오기
 from modules.titanic_handler import preprocess_titanic_data, calculate_titanic_metrics
 from modules.iris_handler import preprocess_iris_data, calculate_iris_metrics
-from modules.mnist_handler import preprocess_mnist_data, calculate_mnist_metrics
+from modules.zoo_handler import preprocess_zoo_data, calculate_zoo_metrics
 from problems.problem1 import display_problem1
 from problems.problem2 import display_problem2
 
@@ -44,9 +44,9 @@ DATASET_FILES = {
         "model": os.path.join(ASSETS_PATH, "iris", "iris_model.pkl"),
         "test_data": os.path.join(ASSETS_PATH, "iris", "iris_test_dataset.csv")
     },
-    "mnist": {
-        "model": os.path.join(ASSETS_PATH, "mnist", "mnist_model.pkl"),
-        "test_data": os.path.join(ASSETS_PATH, "mnist", "mnist_test_dataset.csv")
+    "zoo": {
+    "model": os.path.join(ASSETS_PATH, "zoo", "zoo_model.pkl"),
+    "test_data": os.path.join(ASSETS_PATH, "zoo", "zoo_test_dataset.csv")
     }
 }
 
@@ -69,19 +69,11 @@ def home_page():
     <br><br>
     """, unsafe_allow_html=True)
 
-    # # 시험 시작 버튼 (중앙 배치)
-    # st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-    # if st.button("시험 시작하기 🚀", use_container_width=True):
-    #     st.session_state["page"] = "exam"
-    #     st.rerun()
-    # st.markdown("</div>", unsafe_allow_html=True)
-
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button("시험 시작하기 🚀", use_container_width=True):
             st.session_state["page"] = "exam"
             st.rerun()
-
 
 
 # 🎯 업로드된 파일을 임시 저장하는 함수
@@ -103,6 +95,7 @@ def plot_confusion_matrix(y_test, y_pred):
     ax.set_ylabel('Actual')
     ax.set_title('Confusion Matrix')
     st.pyplot(fig)
+
 
 # 🎯 모델 검증 실행 함수
 # 🎯 모델 검증 실행 함수 (dataset_type과 파일 이름 검사 추가)
@@ -153,13 +146,16 @@ def start_validation():
         X_test, y_test = preprocess_iris_data(test_df)
         y_pred = model.predict(X_test)
         metrics = calculate_iris_metrics(y_test, y_pred)
-    elif dataset_type == "mnist":
-        X_test, y_test = preprocess_mnist_data(test_df)
+    elif dataset_type == "zoo":
+        X_test, y_test = preprocess_zoo_data(test_df)
         y_pred = model.predict(X_test)
-        metrics = calculate_mnist_metrics(y_test, y_pred)
+        metrics = calculate_zoo_metrics(y_test, y_pred)
+
+
 
     # 🔹 성능 결과 출력
     col1, col2 = st.columns(2)
+
     with col1:
         st.subheader("모델 성능 평가 결과")
         for key, value in metrics.items():
@@ -167,7 +163,17 @@ def start_validation():
                 st.markdown(f"<p style='font-size:30px; font-weight:bold;'>✅ {key}: {value:.4f}</p>", unsafe_allow_html=True)
 
     with col2:
-        plot_confusion_matrix(y_test, y_pred)
+        # 다중 라벨인지 확인 (2D 배열인지 체크)
+        is_multilabel = len(y_test.shape) > 1
+
+        if is_multilabel:
+            st.markdown("<h3 style='text-align: center;'>📊 다중 라벨 성능 지표 그래프</h3>", unsafe_allow_html=True)
+            plot_multilabel_metrics(metrics)  # 다중 라벨 → 막대 그래프 출력
+        else:
+            st.markdown("<h3 style='text-align: center;'>🟦 Confusion Matrix</h3>", unsafe_allow_html=True)
+            plot_confusion_matrix(y_test, y_pred)  # 다중 클래스 → Confusion Matrix 출력
+
+
 
 
 
@@ -212,8 +218,8 @@ def exam_page():
             display_problem2()
     
     elif task_type == "모델 검증":
-        dataset_type = st.sidebar.selectbox("분류 유형 선택", ["Titanic (이진 분류)", "Iris (다중 클래스)", "MNIST (다중 레이블)"])
-        dataset_mapping = {"Titanic (이진 분류)": "titanic", "Iris (다중 클래스)": "iris", "MNIST (다중 레이블)": "mnist"}
+        dataset_type = st.sidebar.selectbox("분류 유형 선택", ["Titanic (이진 분류)", "Iris (다중 클래스)", "Zoo (다중 라벨)"])
+        dataset_mapping = {"Titanic (이진 분류)": "titanic", "Iris (다중 클래스)": "iris", "Zoo (다중 라벨)": "zoo"}
         st.session_state["dataset_type"] = dataset_mapping[dataset_type]
 
         # 모델 및 데이터 다운로드 버튼 추가
@@ -225,6 +231,22 @@ def exam_page():
 
         if st.sidebar.button("모델 검증 시작"):
             start_validation()
+
+def plot_multilabel_metrics(metrics):
+    """다중 라벨 성능 지표 시각화"""
+    
+    # 성능 지표 목록 및 값
+    metric_names = ["Hamming Loss", "Exact Match Ratio", "Jaccard Index", "KL Divergence", "Wasserstein Distance"]
+    metric_values = [metrics.get(name, 0) for name in metric_names]
+
+    # ✅ 막대 그래프 생성
+    fig, ax = plt.subplots(figsize=(7, 5))
+    ax.barh(metric_names, metric_values, color=["red", "green", "blue", "purple", "orange"])
+    ax.set_xlabel("Metric Value")
+    ax.set_title("Multi-label Classification Metrics")
+    
+    # ✅ Streamlit에 그래프 출력
+    st.pyplot(fig)
 
 # 🎯 메인 실행 함수 (홈 페이지 & 시험 페이지 연결)
 def main():

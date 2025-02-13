@@ -3,7 +3,7 @@ import pandas as pd
 
 def display_problem2():
     """문제 2를 화면에 표시하는 함수"""
-    st.title("📢 문제 2: 성능 지표 계산")
+    st.title("- 문제 2: 성능 지표 계산")
 
     # 문제 설명
     st.markdown("""
@@ -60,18 +60,18 @@ def display_problem2():
 
     # 문제 섹션
     problem_list = [
-        ("정확도 (Accuracy)", "#FF3333"),
-        ("정밀도 (Precision)", "#FF8800"),
-        ("재현율 (Recall)", "#33AA33"),
-        ("특이도 (Specificity)", "#3377FF"),
-        ("F1-스코어 (F1-score)", "#9900CC"),
-        ("Fβ-스코어 (β=2)", "#CC0066")
+        ("정확도 (Accuracy)", "#FF4B4B"),
+        ("정밀도 (Precision)", "#FF4B4B"),
+        ("재현율 (Recall)", "#FF4B4B"),
+        ("특이도 (Specificity)", "#FF4B4B"),
+        ("F1-스코어 (F1-score)", "#FF4B4B"),
+        ("Fβ-스코어 (β=2)", "#FF4B4B")
     ]
 
     for idx, (title, color) in enumerate(problem_list, start=1):
         st.markdown(f"""
-        ## 📝 문제2-{idx}.
-        <div style='border: 4px solid {color}; padding: 20px; border-radius: 12px; background-color: #FFF8F8;'>
+        ## - 문제2-{idx}.
+        <div style='border: 2px solid {color}; padding: 20px; border-radius: 12px; background-color: #FFF8F8;'>
             <h2 style='font-size:28px; color: {color};'>{title}를 구하시오.</h2>
         </div>
         <br>
