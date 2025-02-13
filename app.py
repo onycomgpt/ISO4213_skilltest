@@ -236,12 +236,12 @@ def plot_multilabel_metrics(metrics):
     """다중 라벨 성능 지표 시각화"""
     
     # 성능 지표 목록 및 값
-    metric_names = ["Hamming Loss", "Exact Match Ratio", "Jaccard Index", "KL Divergence", "Wasserstein Distance"]
+    metric_names = ["Hamming Loss", "Exact Match Ratio", "Jaccard Index", "KL Divergence"]
     metric_values = [metrics.get(name, 0) for name in metric_names]
 
     # ✅ 막대 그래프 생성
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.barh(metric_names, metric_values, color=["red", "green", "blue", "purple", "orange"])
+    ax.barh(metric_names, metric_values, color=["red", "green", "blue", "purple"])
     ax.set_xlabel("Metric Value")
     ax.set_title("Multi-label Classification Metrics")
     

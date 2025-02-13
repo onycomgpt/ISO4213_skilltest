@@ -23,18 +23,15 @@ def preprocess_zoo_data(test_df):
     return None, None
 
 def calculate_distribution_distance(y_test, y_pred):
-    """분포 차이 (KL Divergence & Wasserstein Distance)"""
+    """분포 차이 (KL Divergence)"""
     y_test_dist = np.mean(y_test, axis=0)
     y_pred_dist = np.mean(y_pred, axis=0)
     
     # KL Divergence 계산 (로그 0 방지 위해 epsilon 추가)
     epsilon = 1e-10
     kl_div = entropy(y_test_dist + epsilon, y_pred_dist + epsilon)
-    
-    # Wasserstein Distance 계산 (분포 간 거리 측정)
-    wasserstein_dist = wasserstein_distance(y_test_dist, y_pred_dist)
-    
-    return kl_div, wasserstein_dist
+        
+    return kl_div
 
 def calculate_zoo_metrics(y_test, y_pred):
     """Zoo 모델 성능 평가 (다중 라벨 분류)"""
@@ -50,15 +47,14 @@ def calculate_zoo_metrics(y_test, y_pred):
     jaccard = jaccard_score(y_test, y_pred, average="samples")
 
     # ✅ 분포 차이 메트릭 (KL Divergence & Wasserstein Distance)
-    kl_div, wasserstein_dist = calculate_distribution_distance(y_test, y_pred)
+    kl_div = calculate_distribution_distance(y_test, y_pred)
 
     # ✅ 최종 성능 지표 딕셔너리
     metrics = {
         "Hamming Loss": hamming,
         "Exact Match Ratio": exact_match,
         "Jaccard Index": jaccard,
-        "KL Divergence": kl_div,
-        "Wasserstein Distance": wasserstein_dist
+        "KL Divergence": kl_div
     }
-
+    
     return metrics
