@@ -10,9 +10,13 @@ from sklearn.metrics import confusion_matrix
 # 모듈 가져오기
 from modules.titanic_handler import preprocess_titanic_data, calculate_titanic_metrics
 from modules.iris_handler import preprocess_iris_data, calculate_iris_metrics
-from modules.zoo_handler import preprocess_zoo_data, calculate_zoo_metrics
+from modules.yeast_handler import preprocess_yeast_data, calculate_yeast_metrics
 from problems.problem1 import display_problem1
 from problems.problem2 import display_problem2
+from problems.problem_titanic import display_problem_titanic
+from problems.problem_iris import display_problem_iris
+from problems.problem_yeast import display_problem_yeast
+
 
 # 페이지 설정 (전체 너비 사용)
 st.set_page_config(layout="wide")
@@ -44,14 +48,13 @@ DATASET_FILES = {
         "model": os.path.join(ASSETS_PATH, "iris", "iris_model.pkl"),
         "test_data": os.path.join(ASSETS_PATH, "iris", "iris_test_dataset.csv")
     },
-    "zoo": {
-    "model": os.path.join(ASSETS_PATH, "zoo", "zoo_model.pkl"),
-    "test_data": os.path.join(ASSETS_PATH, "zoo", "zoo_test_dataset.csv")
+    "yeast": {
+    "model": os.path.join(ASSETS_PATH, "yeast", "yeast_model.pkl"),
+    "test_data": os.path.join(ASSETS_PATH, "yeast", "yeast_test_dataset.csv")
     }
 }
 
 
-# 🎯 홈 화면 (랜딩 페이지)
 # 🎯 홈 화면 (랜딩 페이지)
 def home_page():
     # 로고 추가 (좌측 상단)
@@ -146,12 +149,10 @@ def start_validation():
         X_test, y_test = preprocess_iris_data(test_df)
         y_pred = model.predict(X_test)
         metrics = calculate_iris_metrics(y_test, y_pred)
-    elif dataset_type == "zoo":
-        X_test, y_test = preprocess_zoo_data(test_df)
+    elif dataset_type == "yeast":
+        X_test, y_test = preprocess_yeast_data(test_df)
         y_pred = model.predict(X_test)
-        metrics = calculate_zoo_metrics(y_test, y_pred)
-
-
+        metrics = calculate_yeast_metrics(y_test, y_pred)
 
     # 🔹 성능 결과 출력
     col1, col2 = st.columns(2)
@@ -172,9 +173,6 @@ def start_validation():
         else:
             st.markdown("<h3 style='text-align: center;'>🟦 Confusion Matrix</h3>", unsafe_allow_html=True)
             plot_confusion_matrix(y_test, y_pred)  # 다중 클래스 → Confusion Matrix 출력
-
-
-
 
 
 # 🎯 모델 및 데이터 다운로드 버튼 추가
@@ -218,19 +216,26 @@ def exam_page():
             display_problem2()
     
     elif task_type == "모델 검증":
-        dataset_type = st.sidebar.selectbox("분류 유형 선택", ["Titanic (이진 분류)", "Iris (다중 클래스)", "Zoo (다중 라벨)"])
-        dataset_mapping = {"Titanic (이진 분류)": "titanic", "Iris (다중 클래스)": "iris", "Zoo (다중 라벨)": "zoo"}
+        dataset_type = st.sidebar.selectbox("분류 유형 선택", ["Titanic (이진 분류)", "Iris (다중 클래스)", "Yeast (다중 라벨)"])
+        dataset_mapping = {"Titanic (이진 분류)": "titanic", "Iris (다중 클래스)": "iris", "Yeast (다중 라벨)": "yeast"}
         st.session_state["dataset_type"] = dataset_mapping[dataset_type]
+
+        if dataset_type == "Titanic (이진 분류)":
+            display_problem_titanic()
+        if dataset_type == "Iris (다중 클래스)":
+            display_problem_iris()
+        if dataset_type == "Yeast (다중 라벨)":
+            display_problem_yeast()
 
         # 모델 및 데이터 다운로드 버튼 추가
         add_download_buttons(st.session_state["dataset_type"])
 
-        # 모델 및 데이터 업로드 기능 추가
-        st.session_state["uploaded_model"] = st.sidebar.file_uploader("모델 업로드 (.pkl)", type=["pkl"])
-        st.session_state["uploaded_test_data"] = st.sidebar.file_uploader("테스트 데이터 업로드 (.csv)", type=["csv"])
+        # # 모델 및 데이터 업로드 기능 추가
+        # st.session_state["uploaded_model"] = st.sidebar.file_uploader("모델 업로드 (.pkl)", type=["pkl"])
+        # st.session_state["uploaded_test_data"] = st.sidebar.file_uploader("테스트 데이터 업로드 (.csv)", type=["csv"])
 
-        if st.sidebar.button("모델 검증 시작"):
-            start_validation()
+        # if st.sidebar.button("모델 검증 시작"):
+        #     start_validation()
 
 def plot_multilabel_metrics(metrics):
     """다중 라벨 성능 지표 시각화"""
